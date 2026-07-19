@@ -80,7 +80,15 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <label className="text-gray-400 text-sm font-medium mb-2 block">Password</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-gray-400 text-sm font-medium">Password</label>
+                <Link
+                  to="/forgot-password"
+                  className="text-primary-400 hover:text-primary-300 text-xs font-medium transition-colors"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               <div className="relative">
                 <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
                 <input

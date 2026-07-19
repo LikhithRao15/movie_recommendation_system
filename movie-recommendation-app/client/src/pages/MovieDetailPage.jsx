@@ -229,7 +229,15 @@ const MovieDetailPage = () => {
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-3 mb-6">
               {movie.trailerKey && (
-                <button onClick={() => setShowTrailer(true)} className="btn-primary flex items-center gap-2">
+                <button onClick={() => {
+                  setShowTrailer(true);
+                  // Track trailer watch: silently add to favorites to feed ML model
+                  if (isAuthenticated && !isFavorite) {
+                    favoriteService.add(tmdbId).then(() => {
+                      setIsFavorite(true);
+                    }).catch(() => {}); // Ignore if already added
+                  }
+                }} className="btn-primary flex items-center gap-2">
                   <FiPlay size={16} className="fill-current" /> Play Trailer
                 </button>
               )}

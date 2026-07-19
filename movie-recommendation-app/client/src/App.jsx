@@ -9,6 +9,8 @@ import FavoritesPage from './pages/FavoritesPage';
 import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 const NotFoundPage = () => (
   <div className="min-h-screen bg-dark-300 flex items-center justify-center text-center">
@@ -33,6 +35,8 @@ function App() {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
             <Route path="/favorites" element={
               <ProtectedRoute><FavoritesPage /></ProtectedRoute>
             } />

@@ -48,11 +48,11 @@ const MovieCarousel = ({ title, movies = [], loading, icon, favorites, ratings, 
       <div
         ref={scrollRef}
         className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 px-4 sm:px-6 lg:px-8 scroll-smooth"
-        style={{ scrollSnapType: 'x mandatory' }}
+        style={{ scrollSnapType: 'x mandatory', alignItems: 'stretch' }}
       >
         {loading ? (
           Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} style={{ scrollSnapAlign: 'start', flex: '0 0 160px' }}>
+            <div key={i} style={{ scrollSnapAlign: 'start', flex: '0 0 160px' }} className="flex flex-col">
               <SkeletonCard />
             </div>
           ))
@@ -65,6 +65,7 @@ const MovieCarousel = ({ title, movies = [], loading, icon, favorites, ratings, 
             <motion.div
               key={`${movie.tmdbId}-${idx}`}
               style={{ scrollSnapAlign: 'start', flex: '0 0 160px' }}
+              className="flex flex-col"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: idx * 0.03, duration: 0.3 }}

@@ -25,15 +25,15 @@ const MovieCard = ({ movie, isFavorite, userRating, onToggleFavorite, onRate }) 
 
   return (
     <motion.div
-      className="movie-card select-none"
+      className="movie-card select-none flex flex-col h-full"
       onHoverStart={() => setHovering(true)}
       onHoverEnd={() => setHovering(false)}
       whileHover={{ scale: 1.04 }}
       transition={{ duration: 0.2 }}
     >
-      <Link to={`/movie/${tmdbId}`} className="block">
-        {/* Poster */}
-        <div className="relative aspect-[2/3] bg-dark-500 overflow-hidden rounded-xl">
+      <Link to={`/movie/${tmdbId}`} className="flex flex-col h-full">
+        {/* Poster — fixed aspect ratio, fills available width */}
+        <div className="relative aspect-[2/3] bg-dark-500 overflow-hidden rounded-xl flex-shrink-0">
           {displayImage ? (
             <img
               src={posterUrl || backdropUrl}
@@ -84,9 +84,9 @@ const MovieCard = ({ movie, isFavorite, userRating, onToggleFavorite, onRate }) 
           </motion.div>
         </div>
 
-        {/* Card Info */}
-        <div className="p-2 pt-2.5">
-          <h3 className="text-white text-sm font-medium truncate leading-tight">{title}</h3>
+        {/* Card Info — fixed height so all cards align uniformly */}
+        <div className="p-2 pt-2.5 flex-shrink-0" style={{ minHeight: '52px' }}>
+          <h3 className="text-white text-sm font-medium line-clamp-1 leading-tight">{title}</h3>
           <div className="flex items-center justify-between mt-1">
             <span className="text-gray-500 text-xs">{year || '—'}</span>
             {userRating && (
