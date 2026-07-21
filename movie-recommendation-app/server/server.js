@@ -47,6 +47,16 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// Root route welcome check
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: '🎬 Movie Recommendation API is running successfully!',
+    health: '/health',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
