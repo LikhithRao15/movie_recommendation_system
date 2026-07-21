@@ -21,9 +21,6 @@ const Footer = () => {
             <p className="text-gray-400 text-sm leading-relaxed mb-4">
               AI-powered personalized movie recommendation engine. Discover films tailored specifically to your unique cinematic taste.
             </p>
-            <div className="flex items-center gap-2 text-xs text-primary-400 font-medium bg-primary-500/10 border border-primary-500/20 px-3 py-1.5 rounded-full">
-              <MdAutoAwesome className="text-sm" /> Powered by TMDB & ML
-            </div>
           </div>
 
           {/* Quick Links */}
@@ -89,13 +86,11 @@ const Footer = () => {
               CineMind analyzes your favorited movies, ratings, and watched trailers to construct an evolving taste profile.
             </p>
             <div className="flex items-center gap-3">
-              <a href="https://github.com" target="_blank" rel="noreferrer" className="w-9 h-9 bg-dark-500 hover:bg-dark-600 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all">
+              <a href="https://github.com/LikhithRao15" target="_blank" rel="noreferrer" className="w-9 h-9 bg-dark-500 hover:bg-dark-600 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all">
                 <FiGithub size={16} />
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-9 h-9 bg-dark-500 hover:bg-dark-600 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all">
-                <FiTwitter size={16} />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-9 h-9 bg-dark-500 hover:bg-dark-600 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all">
+              
+              <a href="https://instagram.com/likhith__bahumaan" target="_blank" rel="noreferrer" className="w-9 h-9 bg-dark-500 hover:bg-dark-600 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all">
                 <FiInstagram size={16} />
               </a>
             </div>
@@ -105,9 +100,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
           <p>© {new Date().getFullYear()} <span className="text-white font-medium">CineMind</span>. Discover Movies You'll Love. All rights reserved.</p>
-          <p className="flex items-center gap-1">
-            Built with <FiHeart className="text-red-500 fill-current" size={12} /> for Movie Lovers
-          </p>
+          
         </div>
       </div>
     </footer>
