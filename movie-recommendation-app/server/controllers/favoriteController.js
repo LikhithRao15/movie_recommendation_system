@@ -1,6 +1,6 @@
 const Favorite = require('../models/Favorite');
 const { getImdbId } = require('../utils/datasetLoader');
-const { fetchMovieDetails } = require('../utils/tmdbHelpers');
+const { fetchCompactMovie } = require('../utils/tmdbHelpers');
 
 /**
  * @route   POST /api/favorites
@@ -44,9 +44,9 @@ const getFavorites = async (req, res, next) => {
       return res.json({ success: true, favorites: [] });
     }
 
-    // Fetch movie details for all favorites in parallel
+    // Fetch compact movie details for all favorites in parallel
     const moviePromises = favorites.map((fav) =>
-      fetchMovieDetails(fav.tmdbId).catch(() => null)
+      fetchCompactMovie(fav.tmdbId).catch(() => null)
     );
     const movies = await Promise.all(moviePromises);
 

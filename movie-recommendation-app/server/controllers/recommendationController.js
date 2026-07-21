@@ -1,21 +1,45 @@
 const axios = require('axios');
 const Rating = require('../models/Rating');
 const Favorite = require('../models/Favorite');
+const tmdbClient = require('../config/tmdb');
 const { getTmdbId } = require('../utils/datasetLoader');
-const { fetchMoviesBatch } = require('../utils/tmdbHelpers');
+const { fetchCompactBatch, formatMovie } = require('../utils/tmdbHelpers');
+
+/**
+ * Helper to fetch TMDB native recommendations for a set of tmdbIds (Fallback mechanism)
+ */
+const fetchTmdbFallbackRecommendations = async (userTmdbIds) => {
+  try {
+    const seedIds = userTmdbIds.slice(0, 4); // Take up to 4 movies to seed recommendations
+    const tmdbReqs = seedIds.map((id) =>
+      tmdbClient.get(`/movie/${id}/recommendations`).catch(() => null)
+    );
+
+    const responses = await Promise.all(tmdbReqs);
+    const setSeen = new Set(userTmdbIds);
+    const recs = [];
+
+    for (const res of responses) {
+      if (res?.data?.results) {
+        for (const m of res.data.results) {
+          if (!setSeen.has(m.id)) {
+            setSeen.add(m.id);
+            recs.push(formatMovie(m));
+          }
+        }
+      }
+    }
+    return recs.slice(0, 20);
+  } catch (err) {
+    console.error('TMDB fallback error:', err.message);
+    return [];
+  }
+};
 
 /**
  * @route   GET /api/recommendations
- * @desc    Get personalized movie recommendations
+ * @desc    Get personalized movie recommendations (ML model + TMDB fallback)
  * @access  Private
- *
- * Flow:
- * 1. Fetch all rated & favorited movies from MongoDB
- * 2. Build the payload for the ML recommendation API
- * 3. Call the ML API
- * 4. Map returned imdbIds to tmdbIds using the dataset
- * 5. Fetch full TMDB details for each recommendation
- * 6. Return enriched movie objects
  */
 const getRecommendations = async (req, res, next) => {
   try {
@@ -27,24 +51,26 @@ const getRecommendations = async (req, res, next) => {
       Favorite.find({ userId }),
     ]);
 
-    // Build a map of imdbId -> rating (ratings take priority over favorites)
-    const movieMap = new Map();
+    // Build lists of user movies
+    const userTmdbIds = new Set();
+    const movieMap = new Map(); // imdbId -> rating
 
-    // Add favorites with a default rating of 4
     favorites.forEach((fav) => {
+      userTmdbIds.add(fav.tmdbId);
       if (fav.imdbId) {
         movieMap.set(fav.imdbId, movieMap.get(fav.imdbId) || 4);
       }
     });
 
-    // Add/override with actual ratings
     ratings.forEach((r) => {
+      userTmdbIds.add(r.tmdbId);
       if (r.imdbId) {
         movieMap.set(r.imdbId, r.rating);
       }
     });
 
-    if (movieMap.size === 0) {
+    // If user has no favorites/ratings yet
+    if (movieMap.size === 0 && userTmdbIds.size === 0) {
       return res.json({
         success: true,
         recommendations: [],
@@ -52,62 +78,59 @@ const getRecommendations = async (req, res, next) => {
       });
     }
 
-    // Step 2: Build ML API payload
-    const payload = Array.from(movieMap.entries()).map(([imdbId, rating]) => ({
-      imdbId: Number(imdbId),
-      rating: Number(rating),
-    }));
-
-    // Step 3: Call ML Recommendation API
+    // Step 2: Try ML Recommendation API with a fast 3.5s timeout
     let mlResults = [];
-    try {
-      const { data } = await axios.post(
-        process.env.RECOMMENDATION_API_URL || 'https://ml-movie-recomedetion-model.onrender.com/rec',
-        payload,
-        {
-          timeout: 60000, // 60s timeout (Render cold start)
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-      mlResults = Array.isArray(data) ? data : [];
-    } catch (mlError) {
-      console.error('ML API error:', mlError.message);
-      return res.status(503).json({
-        success: false,
-        message: 'Recommendation service is temporarily unavailable. Please try again later.',
-      });
+    if (movieMap.size > 0) {
+      const payload = Array.from(movieMap.entries()).map(([imdbId, rating]) => ({
+        imdbId: Number(imdbId),
+        rating: Number(rating),
+      }));
+
+      try {
+        const { data } = await axios.post(
+          process.env.RECOMMENDATION_API_URL || 'https://ml-movie-recomedetion-model.onrender.com/rec',
+          payload,
+          {
+            timeout: 3500, // 3.5s fast timeout to prevent page blocking
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+        mlResults = Array.isArray(data) ? data : [];
+      } catch (mlError) {
+        console.warn('ML API timeout/error, switching to TMDB recommendation fallback:', mlError.message);
+      }
     }
 
-    if (mlResults.length === 0) {
-      return res.json({ success: true, recommendations: [], message: 'No recommendations found' });
-    }
-
-    // Step 4: Map imdbIds to tmdbIds (exclude movies already rated/favorited)
+    // Step 3: Extract recommended TMDB IDs from ML model
     const ratedImdbIds = new Set(movieMap.keys());
     const tmdbIds = [];
 
     for (const item of mlResults) {
       const imdbId = Number(item.imdbId);
-      if (ratedImdbIds.has(imdbId)) continue; // Skip already-rated movies
+      if (ratedImdbIds.has(imdbId)) continue;
 
       const tmdbId = getTmdbId(imdbId);
-      if (tmdbId) {
+      if (tmdbId && !userTmdbIds.has(tmdbId)) {
         tmdbIds.push(tmdbId);
       }
     }
 
-    if (tmdbIds.length === 0) {
-      return res.json({ success: true, recommendations: [], message: 'No new recommendations available' });
+    // Step 4: If ML returned valid TMDB IDs, fetch compact movie details fast
+    let finalRecommendations = [];
+    if (tmdbIds.length > 0) {
+      const limitedTmdbIds = tmdbIds.slice(0, 20);
+      finalRecommendations = await fetchCompactBatch(limitedTmdbIds, 10);
     }
 
-    // Step 5: Fetch TMDB details (limit to 20 for performance)
-    const limitedTmdbIds = tmdbIds.slice(0, 20);
-    const movies = await fetchMoviesBatch(limitedTmdbIds, 6);
+    // Step 5: Fallback if ML model was offline/cold or gave empty results
+    if (finalRecommendations.length === 0 && userTmdbIds.size > 0) {
+      finalRecommendations = await fetchTmdbFallbackRecommendations(Array.from(userTmdbIds));
+    }
 
     res.json({
       success: true,
-      recommendations: movies,
-      count: movies.length,
+      recommendations: finalRecommendations,
+      count: finalRecommendations.length,
     });
   } catch (error) {
     next(error);

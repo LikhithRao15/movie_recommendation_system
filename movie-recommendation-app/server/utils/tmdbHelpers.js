@@ -107,4 +107,43 @@ const fetchMoviesBatch = async (tmdbIds, concurrency = 8) => {
   return results;
 };
 
-module.exports = { fetchMovieDetails, fetchMoviesBatch, formatMovie, getPosterUrl, getBackdropUrl };
+/**
+ * Fetch lightweight compact movie info for cards (fast, no heavy credits/videos)
+ */
+const fetchCompactMovie = async (tmdbId) => {
+  try {
+    const { data } = await tmdbClient.get(`/movie/${tmdbId}`);
+    return formatMovie(data);
+  } catch (error) {
+    return null;
+  }
+};
+
+/**
+ * Fetch compact movie batch fast
+ */
+const fetchCompactBatch = async (tmdbIds, concurrency = 10) => {
+  const results = [];
+  const valid = tmdbIds.filter((id) => id && !isNaN(id));
+
+  for (let i = 0; i < valid.length; i += concurrency) {
+    const batch = valid.slice(i, i + concurrency);
+    const settled = await Promise.allSettled(
+      batch.map((id) => fetchCompactMovie(id))
+    );
+    settled.forEach((result) => {
+      if (result.status === 'fulfilled' && result.value) results.push(result.value);
+    });
+  }
+  return results;
+};
+
+module.exports = {
+  fetchMovieDetails,
+  fetchMoviesBatch,
+  fetchCompactMovie,
+  fetchCompactBatch,
+  formatMovie,
+  getPosterUrl,
+  getBackdropUrl,
+};
