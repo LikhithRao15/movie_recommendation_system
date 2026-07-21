@@ -10,12 +10,6 @@ lerna-debug.log*
 # Dependencies
 node_modules/
 
-# Production & Build outputs
-dist
-dist-ssr
-build
-.vite
-
 # Environment variables & secrets
 .env
 .env.*
@@ -32,7 +26,7 @@ build
 *.sln
 *.sw?
 
-# Cache
-.cache
-.oxlintcache
-.eslintcache
+# OS & Temporary
+Thumbs.db
+*.tmp
+*.temp

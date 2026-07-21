@@ -1,16 +1,46 @@
-# React + Vite
+# Movie Recommendation App - Client Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This is the frontend client for the **Movie Recommendation System**, built with **React 19**, **Vite**, **Tailwind CSS**, **Framer Motion**, and **TanStack React Query**.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Modern, responsive Dark Theme UI
+- Dynamic homepage featuring trending movies, top-rated movies, and category sliders
+- Full search page with genre filtering and real-time query results
+- Detailed movie view with synopsis, cast, runtime, user ratings, and trailer video modal
+- User authentication views (Login, Signup, Forgot Password, Reset Password)
+- Protected pages for User Profile & Favorites
+- Fast data caching and asynchronous state management powered by TanStack Query
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React 19** & **Vite**
+- **Tailwind CSS** + **PostCSS**
+- **Framer Motion** for animations
+- **React Router v7** for page navigation
+- **TanStack React Query v5** for server-state caching
+- **Axios** for API integration
+- **React Icons**
 
-## Expanding the Oxlint configuration
+## 🏃 Setup & Local Running
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Configure `.env`**:
+   Create a `.env` file in `client/`:
+   ```env
+   VITE_API_URL=http://localhost:5001/api
+   ```
+
+3. **Start development server**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production**:
+   ```bash
+   npm run build
+   ```
