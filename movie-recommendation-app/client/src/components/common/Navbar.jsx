@@ -5,6 +5,7 @@ import {
   FiSearch, FiX, FiFilm, FiHeart, FiUser, FiLogOut, FiMenu, FiChevronDown
 } from 'react-icons/fi';
 import { MdLocalMovies } from 'react-icons/md';
+import CineMindLogo from './CineMindLogo';
 import { useAuth } from '../../contexts/AuthContext';
 import { movieService } from '../../services/movieService';
 import useDebounce from '../../hooks/useDebounce';
@@ -74,11 +75,8 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-              <MdLocalMovies className="text-white text-xl" />
-            </div>
-            <span className="font-display font-bold text-xl gradient-text hidden sm:block">CineAI</span>
+          <Link to="/">
+            <CineMindLogo size="md" />
           </Link>
 
           {/* Desktop Nav Links */}

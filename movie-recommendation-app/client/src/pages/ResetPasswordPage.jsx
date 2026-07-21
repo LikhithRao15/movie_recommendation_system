@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiLock, FiEye, FiEyeOff, FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
-import { MdLocalMovies } from 'react-icons/md';
+import CineMindLogo from '../components/common/CineMindLogo';
 import { authService } from '../services/authService';
 
 const ResetPasswordPage = () => {
@@ -58,10 +58,10 @@ const ResetPasswordPage = () => {
         className="w-full max-w-md relative z-10"
       >
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-accent-500 rounded-2xl flex items-center justify-center shadow-2xl mx-auto mb-4">
-            <MdLocalMovies className="text-white text-3xl" />
-          </div>
+        <div className="text-center mb-8 flex flex-col items-center">
+          <Link to="/" className="mb-4">
+            <CineMindLogo size="xl" />
+          </Link>
           <h1 className="text-3xl font-display font-bold gradient-text">
             {success ? 'Password Reset!' : 'Set New Password'}
           </h1>

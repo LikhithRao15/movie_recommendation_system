@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiMail, FiAlertCircle, FiCheckCircle, FiArrowLeft } from 'react-icons/fi';
-import { MdLocalMovies } from 'react-icons/md';
+import CineMindLogo from '../components/common/CineMindLogo';
 import { authService } from '../services/authService';
 
 const ForgotPasswordPage = () => {
@@ -40,12 +40,12 @@ const ForgotPasswordPage = () => {
         className="w-full max-w-md relative z-10"
       >
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-accent-500 rounded-2xl flex items-center justify-center shadow-2xl mx-auto mb-4">
-            <MdLocalMovies className="text-white text-3xl" />
-          </div>
-          <h1 className="text-3xl font-display font-bold gradient-text">Forgot Password?</h1>
-          <p className="text-gray-500 mt-2">Enter your email to receive a reset link</p>
+        <div className="text-center mb-8 flex flex-col items-center">
+          <Link to="/" className="mb-4">
+            <CineMindLogo size="xl" />
+          </Link>
+          <h1 className="text-3xl font-display font-bold text-white mt-2">Forgot Password?</h1>
+          <p className="text-gray-400 mt-1">Enter your email to receive a reset link</p>
         </div>
 
         <div className="glass-card p-8">
