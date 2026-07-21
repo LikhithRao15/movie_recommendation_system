@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/common/Navbar';
+import Footer from './components/common/Footer';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import MovieDetailPage from './pages/MovieDetailPage';
@@ -45,6 +46,7 @@ function App() {
             } />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
+          <Footer />
         </div>
       </AuthProvider>
     </BrowserRouter>
