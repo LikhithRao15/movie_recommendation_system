@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiAlertCircle, FiCheck } from 'react-icons/fi';
 import { MdLocalMovies } from 'react-icons/md';
 import CineMindLogo from '../components/common/CineMindLogo';
+import { useAuth } from '../contexts/AuthContext';
 
 const SignupPage = () => {
   const { signup } = useAuth();
